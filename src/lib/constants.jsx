@@ -1,0 +1,1 @@
+ export const WORDPRESS_API_URL = 'http://impian-homestay.local/wp-json'
