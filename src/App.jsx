@@ -10,11 +10,20 @@ function App() {
       <Router>
         <div className="min-h-screen flex flex-col ">
           {/* navbar goes here */}
+          
           <Navbar/>
-          <main className="flex-grow-1">
+          <main className="flex-grow-1 ">
             {/* entire web page goes here */}
             <Routes>
+              {/* homepage */}
               <Route path="/" element={<Home/>}/>
+              {/*  properties list with card */}
+
+              {/* attraction in the area */}
+              {/* login page */}
+
+              {/*  */}
+              {/* booking page */}
             </Routes>
 
           </main>
