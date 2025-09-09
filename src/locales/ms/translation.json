@@ -5,7 +5,9 @@
   "description-header":"Homestay dekat KLIA yang menyediakan penginapan santai dan terjangkau. Dengan akses mudah ke airport, kami ialah pilihan terbaik untuk perhentian singkat anda. Tempah sekarang!",
   "nav":{
     "home":"Laman Utama",
-    "about": "Tentact Kami",
-    "contact": "Hubungi Kami"
+    "about": "Tentang Kami",
+    "contact": "Hubungi ",
+    "service":"Servis"
   }
+  
 }

@@ -21,50 +21,12 @@
   --p-size: 14px;
 }
 
-h1 {
-  font-size: var(--h1-size);
-}
-h2 {
- 
-  font-size: var(--h2-size);
-}
-h3 {
-  font-size: var(--h3-size);
-}
-h4 {
-  font-size: var(--h4-size);
-}
-p {
-  font-size: var(--p-size);
-}
-
-
-@media (max-width: 720px) {
-  :root {
-    --h1-size: 40px;
-    --h2-size: 35px;
-    --h3-size: 30px;
-    --h4-size: 25px;
-    --p-size: 22px;
-  }
-}
-
-@media (max-width: 420px) {
-  :root {
-    --h1-size: 30px;
-    --h2-size: 25px;
-    --h3-size: 20px;
-    --h4-size: 15px;
-    --p-size: 12px;
-  }
-}
 
 
 * {
-  margin: 0;
-  padding: 0;
+  
   box-sizing: border-box;
-  background-color: white;
+ 
 }
 
 body {

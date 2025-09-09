@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+
 import Home from "./pages/public/Home";
 import Navbar from "./components/navigation/Navbar";
 
