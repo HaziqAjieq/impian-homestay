@@ -9,7 +9,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen flex flex-col ">
+        <div className="min-h-screen flex flex-col  transition-all">
           {/* navbar goes here */}
           
           <Navbar/>

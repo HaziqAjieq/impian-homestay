@@ -1,13 +1,30 @@
 {
-  "__note__" :" Translation Bahasa Melayu",
-   "quote":"\"Perhentian terbaik sebelum perjalanan seterusnya.\"",
-  
-  "description-header":"Homestay dekat KLIA yang menyediakan penginapan santai dan terjangkau. Dengan akses mudah ke airport, kami ialah pilihan terbaik untuk perhentian singkat anda. Tempah sekarang!",
-  "nav":{
-    "home":"Laman Utama",
+  "__note__": " Translation Bahasa Melayu",
+  "quote": "\"Perhentian terbaik sebelum perjalanan seterusnya.\"",
+
+  "description-header": "Homestay dekat KLIA yang menyediakan penginapan santai dan terjangkau. Dengan akses mudah ke airport, kami ialah pilihan terbaik untuk perhentian singkat anda. Tempah sekarang!",
+  "nav": {
+    "home": "Laman Utama",
     "about": "Tentang Kami",
     "contact": "Hubungi ",
-    "service":"Servis"
-  }
-  
+    "service": "Servis"
+  },
+  "description-choose-us": [
+    {
+      "title-1": "Ruang Untuk Semua",
+      "description-1": "Dapatkan keseluruhan rumah untuk kumpulan anda, selalunya pada harga yang lebih murah berbanding beberapa bilik hotel."
+    },
+    {
+      "title-2": "Hidup Seperti Penduduk Tempatan",
+      "description-2": "Masak, berehat, dan bersantai di rumah sebenar yang dilengkapi dapur dan ruang tamu yang lengkap."
+    },
+    {
+      "title-3": "Hos Disahkan",
+      "description-3": "Kami mengesahkan hos kami untuk memastikan anda mempunyai orang hubungan yang boleh dipercayai dan profesional."
+    },
+    {
+      "title-4": "Pengalaman Tulen",
+      "description-4": "Cipta perjalanan yang berkesan dengan penginapan yang unik dan cadangan peribadi daripada hos."
+    }
+  ]
 }

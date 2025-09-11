@@ -91,7 +91,7 @@ export default function HamburgerMenu() {
         width: 100%;
         top: 0;
         left: 0;
-        background: #bb4d00;
+        background: #614900;
         z-index: 10;
         display: flex;
         flex-direction: column;

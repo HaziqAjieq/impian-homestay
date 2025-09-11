@@ -1,12 +1,30 @@
 {
-  "__note__" :" Translation to English",
-  "quote":"\"The perfect stop before your next journey begins.\"",
-  "Perhentian terbaik sebelum perjalanan seterusnya.":"",
-  "description-header":"A homestay near KLIA providing relaxed and affordable accommodation. With easy access to the airport, we are the best choice for your short stopover. Book now!",
-  "nav":{
-    "home":"Home",
+  "__note__": " Translation to English",
+  "quote": "\"The perfect stop before your next journey begins.\"",
+  "Perhentian terbaik sebelum perjalanan seterusnya.": "",
+  "description-header": "A homestay near KLIA providing relaxed and affordable accommodation. With easy access to the airport, we are the best choice for your short stopover. Book now!",
+  "nav": {
+    "home": "Home",
     "about": "About Us",
     "contact": "Contact",
-    "service":"Service"
-  }
+    "service": "Service"
+  },
+  "description-choose-us": [
+    {
+      "title-1": "Space for Everyone",
+      "description-1": "Get an entire home for your group, often for less than the cost of multiple hotel rooms."
+    },
+    {
+      "title-2": "Live Like a Local",
+      "description-2": "Cook, relax, and unwind in a real home with a full kitchen and living space."
+    },
+    {
+      "title-3": "Verified Hosts",
+      "description-3": "We verify our hosts to ensure you have a reliable and professional point of contact."
+    },
+    {
+      "title-4": "Authentic Experiences",
+      "description-4": "Create memorable trips with unique stays and personal recommendations from hosts."
+    }
+  ]
 }

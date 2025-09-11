@@ -1,23 +1,40 @@
 import { useTranslation } from "react-i18next";
 import navLogo from "../../assets/logo/logo-impian.png";
 import HamburgerMenu from "../ui/HamburgerMenu";
-import { useNavigate } from "react-router-dom";
+
 import ContactBtn from "../ui/button/ContactBtn";
 import LoginBtn from "../ui/button/LoginBtn";
 import ToggleLanBtn from "../ui/button/ToggleLanBtn";
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const { t } = useTranslation();
- 
+  const [isScrolled , setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () =>{
+      if(window.scrollY > 150){
+        setIsScrolled(true);
+      }else{
+        setIsScrolled(false)
+      }
+    };
+
+    window.addEventListener('scroll' , handleScroll);
+    return () => window.removeEventListener('scroll' , handleScroll);
+  },[])
 
   return (
-    <nav className="nav-logo grid grid-cols-12 grid-rows-1 bg-amber-700 py-3 rounded-b-3xl md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all sticky top-0 z-10">
+    <nav className={`nav-logo grid grid-cols-12 grid-rows-1  py-3 rounded-b-3xl md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all duration-500 ease-in-out  sticky top-0 md:top-5 z-10 ${
+      isScrolled
+      ? 'bg-custom-brown' : ''
+    }`} >
       <div className="col-start-1 col-span-4 md:col-start-2 sm:col-span-2  lg:col-span-1 lg:col-start-2 ">
         {/* logo goes here */}
         <img src={navLogo} className="min-h-[30px] max-h-[50px] w-auto" />
       </div>
-      <div className="nav-menu hidden md:col-start-5 md:col-span-4 md:flex  font-bold text-white">
+      <div className="nav-menu hidden md:col-start-5 md:col-span-4 md:flex  font-bold text-white ">
         <ul className="flex flex-row gap-4">
           <li>
             <NavLink to='/' end>
