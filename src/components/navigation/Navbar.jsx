@@ -7,12 +7,21 @@ import LoginBtn from "../ui/button/LoginBtn";
 import ToggleLanBtn from "../ui/button/ToggleLanBtn";
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const { t } = useTranslation();
   const [isScrolled , setIsScrolled] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
+    if(!isHomePage){
+      setIsScrolled(true);
+      return
+    }
+
+
     const handleScroll = () =>{
       if(window.scrollY > 150){
         setIsScrolled(true);
@@ -23,12 +32,12 @@ export default function Navbar() {
 
     window.addEventListener('scroll' , handleScroll);
     return () => window.removeEventListener('scroll' , handleScroll);
-  },[])
+  },[isHomePage])
 
   return (
-    <nav className={`nav-logo grid grid-cols-12 grid-rows-1  py-3 rounded-b-3xl md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all duration-500 ease-in-out  sticky top-0 md:top-5 z-10 ${
+    <nav className={`nav-logo grid grid-cols-12 grid-rows-1  py-3 rounded-b-3xl md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all duration-500 ease-in-out  sticky top-0  z-10 ${
       isScrolled
-      ? 'bg-custom-brown' : ''
+      ? 'bg-custom-brown top-0' : 'md:top-4'
     }`} >
       <div className="col-start-1 col-span-4 md:col-start-2 sm:col-span-2  lg:col-span-1 lg:col-start-2 ">
         {/* logo goes here */}
