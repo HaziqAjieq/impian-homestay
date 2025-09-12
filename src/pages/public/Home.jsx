@@ -5,6 +5,10 @@ import { faHouse, faStar } from "@fortawesome/free-regular-svg-icons";
 import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { faMagnifyingGlassLocation } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
+// example card
+import Card from "../../components/ui/card/Card";
+import image1 from '../../assets/slider/visit/erl-salak.jpg';
+import image2 from '../../assets/slider/visit/klia1.jpg';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -15,9 +19,9 @@ export default function Home() {
       <div>
         <Header />
       </div>
-      <div className=" flex  justify-center">
+      <div className=" flex flex-col justify-center gap-5">
         {/* why choose us section with 4 grid box */}
-        <div className="grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-12 place-items-center  sm:gap-5 gap-y-[20px] mt-8 px-8 md:px-0 md:max-w-[1400px] ">
+        <div className="choose-us grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-12 place-items-center  sm:gap-5 gap-y-[20px] mt-8 px-8 md:px-0 md:max-w-[1400px] ">
           {features.map((feature, index) => (
              <div className="features-card col-span-6 sm:col-span-4 lg:col-span-3 flex flex-col items-center text-center max-w-[400px] pt-4 h-full   ">
             {index === 0 && <FontAwesomeIcon icon={faHouse} className="font-bold text-5xl " />}
@@ -36,6 +40,22 @@ export default function Home() {
          
         
         </div>
+          {/* destination component */}
+          {/* card exepting image and text  */}
+          <div>
+           <Card
+          imageUrl={image1}
+          title="Card Title One"
+          
+          />
+          <Card
+          imageUrl={image2}
+          title="Card Title Two"
+          
+          />
+
+          </div>
+         
       </div>
       {/* style-card */}
          <style>{`

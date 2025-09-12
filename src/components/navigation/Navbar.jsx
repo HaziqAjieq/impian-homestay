@@ -43,8 +43,8 @@ export default function Navbar() {
         {/* logo goes here */}
         <img src={navLogo} className="min-h-[30px] max-h-[50px] w-auto" />
       </div>
-      <div className="nav-menu hidden md:col-start-5 md:col-span-4 md:flex  font-bold text-white ">
-        <ul className="flex flex-row gap-4">
+      <div className="nav-menu hidden md:col-start-5 md:col-span-4 md:flex  font-bold text-white  ">
+        <ul className="flex flex-row gap-4 text-center items-center ">
           <li>
             <NavLink to='/' end>
                {t("nav.home")}
