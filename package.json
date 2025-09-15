@@ -16,6 +16,7 @@
     "@fortawesome/react-fontawesome": "^3.0.2",
     "@tailwindcss/vite": "^4.1.13",
     "axios": "^1.11.0",
+    "dotenv": "^17.2.2",
     "i18next": "^25.5.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "react": "^19.1.1",

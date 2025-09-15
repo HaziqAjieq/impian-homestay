@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-
+import PropertyPage from "./pages/public/PropertyPage";
 import Home from "./pages/public/Home";
 import Navbar from "./components/navigation/Navbar";
 
@@ -19,12 +19,10 @@ function App() {
               {/* homepage */}
               <Route path="/" element={<Home/>}/>
               {/*  properties list with card */}
-
-              {/* attraction in the area */}
-              {/* login page */}
-
+              {/* <Route path="/property" element={<Property/>} /> */}
               {/*  */}
               {/* booking page */}
+              <Route path="/property/:slug" element={<PropertyPage/>}/>
             </Routes>
 
           </main>

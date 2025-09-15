@@ -4,6 +4,7 @@
 
 @theme {
     --color-custom-brown: #614900;
+    --color-custom-brown2:#B38600;
 }
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;

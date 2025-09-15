@@ -6,10 +6,8 @@ import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { faMagnifyingGlassLocation } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import Destination from "../../components/ui/homepage/Destination";
-// example card
-// import Card from "../../components/ui/card/Card";
-// import image1 from '../../assets/slider/visit/erl-salak.jpg';
-// import image2 from '../../assets/slider/visit/klia1.jpg';
+import Properties from "../../components/ui/card/PropertyCard";
+import TestFetch from "../../lib/test/TetstFetch.jsx";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -24,7 +22,9 @@ export default function Home() {
         {/* why choose us section with 4 grid box */}
         <div className="choose-us grid grid-cols-6 sm:grid-cols-8 lg:grid-cols-12 place-items-center  sm:gap-5 gap-y-[20px] mt-8 px-8 md:px-0 md:max-w-[1400px] ">
           {features.map((feature, index) => (
-            <div className="features-card col-span-6 sm:col-span-4 lg:col-span-3 flex flex-col items-center text-center max-w-[400px] pt-4 h-full   ">
+            <div 
+            key={index}
+            className="features-card col-span-6 sm:col-span-4 lg:col-span-3 flex flex-col items-center text-center max-w-[400px] pt-4 h-full   ">
               {index === 0 && (
                 <FontAwesomeIcon
                   icon={faHouse}
@@ -58,12 +58,15 @@ export default function Home() {
         </div>
         {/* destination component */}
         {/* card exepting image and text  */}
-        <div>
-          <h1 className="text-center font-black text-3xl md:text-5xl text-custom-brown underline my-8">
+        <div className=" my-5 ">
+          <h1 className=" font-black text-2xl sm:text-3xl md:text-5xl text-custom-brown ml-10 my-4">
             {t('destination')}
           </h1>
+         
           <Destination />
         </div>
+        <Properties/>
+          
       </div>
       {/* style-card */}
       <style>{`
