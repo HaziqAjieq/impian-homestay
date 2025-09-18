@@ -4,6 +4,7 @@ import { AuthProvider } from "./context/AuthContext";
 import PropertyPage from "./pages/public/PropertyPage";
 import Home from "./pages/public/Home";
 import Navbar from "./components/navigation/Navbar";
+import Property from "./pages/public/Property";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
               {/* homepage */}
               <Route path="/" element={<Home/>}/>
               {/*  properties list with card */}
+              <Route path="/property" element={<Property/>}/>
               {/* <Route path="/property" element={<Property/>} /> */}
               {/*  */}
               {/* booking page */}

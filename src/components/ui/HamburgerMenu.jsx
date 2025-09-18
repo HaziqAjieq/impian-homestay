@@ -85,7 +85,7 @@ export default function HamburgerMenu() {
               {[
                 { key: "nav.home", href: "/" },
                 { key: "nav.about", href: "/about" },
-                { key: "nav.service", href: "/service" },
+                { key: "nav.service", href: "/property" },
               ].map((item, index) => (
                 <li
                   key={item.key}
@@ -116,7 +116,7 @@ export default function HamburgerMenu() {
                 style={{ opacity: isNavOpen ? 1 : 0 }}
               >
                 <ContactBtn />
-                <LoginBtn />
+              
               </div>
               <div
                 className="flex justify-center mt-4 transition-opacity duration-700 delay-600"

@@ -35,7 +35,7 @@ export default function Navbar() {
   },[isHomePage])
 
   return (
-    <nav className={`nav-logo grid grid-cols-12 grid-rows-1  py-3 rounded-b-3xl md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all duration-500 ease-in-out  sticky top-0  z-10 ${
+    <nav className={`nav-logo grid grid-cols-12 grid-rows-1  py-3 rounded-b-3xl md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all duration-500 ease-in-out  sticky top-0  z-100 ${
       isScrolled
       ? 'bg-custom-brown top-0' : 'md:top-4'
     }`} >
@@ -58,7 +58,7 @@ export default function Navbar() {
            
           </li>
           <li>
-            <NavLink to='/service' end>
+            <NavLink to='/property' end>
               {t("nav.service")}
             </NavLink>
            
@@ -68,9 +68,7 @@ export default function Navbar() {
 
       {/* toggle language button */}
       <div className=" hidden col-span-1 col-start-9 md:col-start-10 md:flex flex-row gap-6 text-white">
-        <ContactBtn />
-        <LoginBtn />
-        
+        <ContactBtn /> 
       </div>
 
       <div className=" hidden col-span-2 col-start-11 md:flex flex-row gap-6 text-white">
