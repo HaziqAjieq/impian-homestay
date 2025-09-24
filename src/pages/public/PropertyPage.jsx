@@ -80,7 +80,7 @@ function PropertyPage({ properties }) {
         </div>
       </div>
       <div className="row-start-2 px-5 col-span-6 md:row-auto  md:col-span-5 md:col-start-8 h-full ">
-        <BookingForm propertyId={property.id}/>
+        <BookingForm propertyId={property.id} />
       </div>
     </div>
     {/* slider card goes here */}

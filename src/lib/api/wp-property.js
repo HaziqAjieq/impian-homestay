@@ -39,6 +39,8 @@ export async function fetchProperties() {
       propertyType: item.acf.property_type,
       featuredImage: await fetchImage(item.acf.featured_image),
       image: images.filter(Boolean),
+
+      // fetching facilities latter
     };
   }));
 }

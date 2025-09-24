@@ -1,14 +1,11 @@
 import React, { useState } from "react";
+import CalendarBooking from "../../calendar/CalendarBooking";
 
 export default function BookingForm({ propertyId }) {
-  // set default date to avoid wrong select date booking
   const today = new Date().toISOString().split("T")[0];
-  const [selectedDate, setSelectedDate] = useState(today);
-
-  const handleChangeDate = (e) => {
-    setSelectedDate(e.target.value);
-  };
-  // form setup to wordpress
+  const [selectedDates, setSelectedDates] = useState(null);
+  
+  // Form setup with pre-filled dates from calendar
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -20,6 +17,16 @@ export default function BookingForm({ propertyId }) {
     property_id: propertyId,
   });
 
+  // Handle dates selected from calendar
+  const handleDatesSelected = (dates) => {
+    setSelectedDates(dates);
+    setForm(prev => ({
+      ...prev,
+      check_in: dates.check_in,
+      check_out: dates.check_out
+    }));
+  };
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -27,65 +34,104 @@ export default function BookingForm({ propertyId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-     try {
-    const res = await fetch('https://impian-homestay.local/wp-json/homestay/v1/create', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
-
-    if (!res.ok) {
-      // Server responded but with error (e.g. PHP fatal error, 500, 404, etc.)
-      const errorText = await res.text();
-      console.error("Server responded with error:", res.status, errorText);
-      alert(`Booking failed: ${res.status}`);
+    // Validate dates are selected
+    if (!form.check_in || !form.check_out) {
+      alert("Please select check-in and check-out dates from the calendar");
       return;
     }
 
-    const data = await res.json();
-    console.log("Booking Response:", data);
+    try {
+      const res = await fetch('https://impian-homestay.local/wp-json/homestay/v1/booking', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
 
-    if (data.success) {
-      alert("Booking created! ID: " + data.id);
-    } else {
-      alert("Booking failed: " + JSON.stringify(data));
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Server responded with error:", res.status, errorText);
+        alert(`Booking failed: ${res.status}`);
+        return;
+      }
+
+      const data = await res.json();
+      console.log("Booking Response:", data);
+
+      if (data.success) {
+        alert("Booking created! ID: " + data.id);
+        // Reset form
+        setForm({
+          name: "",
+          email: "",
+          phone_number: "",
+          check_in: "",
+          check_out: "",
+          guests: 1,
+          notes: "",
+          property_id: propertyId,
+        });
+        setSelectedDates(null);
+      } else {
+        alert("Booking failed: " + JSON.stringify(data));
+      }
+    } catch (err) {
+      console.error("Network/CORS error:", err);
+      alert("Network/CORS error: Check if WordPress is sending CORS headers.");
     }
-  } catch (err) {
-    // If you see this, the request never reached WP (likely CORS)
-    console.error("Network/CORS error:", err);
-    alert("Network/CORS error: Check if WordPress is sending CORS headers.");
-  }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className=" p-6 bg-gray-100 rounded-xl h-auto shadow-2xl md:sticky md:top-30 z-10 text-gray-600 "
+      className="p-6 bg-gray-100 rounded-xl h-auto shadow-2xl md:sticky md:top-30 z-10 text-gray-600"
     >
-      {/* text basd on translation */}
       <h2 className="text-xl font-semibold mb-4">Book This Property</h2>
+      
+      {/* Calendar inside the booking form */}
+      <div className="mb-6">
+        <CalendarBooking 
+          propertyId={propertyId} 
+          onDatesSelected={handleDatesSelected}
+        />
+      </div>
+
+      {/* Selected dates display */}
+      {form.check_in && form.check_out && (
+        <div className="mb-4 p-3 bg-green-50 rounded-md">
+          <p className="font-medium text-green-700">Selected Dates:</p>
+          <p>Check-in: {form.check_in}</p>
+          <p>Check-out: {form.check_out}</p>
+        </div>
+      )}
+
       <input
         type="text"
         name="name"
         placeholder="Your Name"
+        value={form.name}
         onChange={handleChange}
-        className="w-full mb-3 p-2 border border-gray-400 active:border-0 rounded "
+        required
+        className="w-full mb-3 p-2 border border-gray-400 active:border-0 rounded"
       />
       <input
         type="email"
         name="email"
         placeholder="Your Email"
+        value={form.email}
         onChange={handleChange}
-        className="w-full mb-3 p-2 border border-gray-400 active:border-0  rounded"
+        required
+        className="w-full mb-3 p-2 border border-gray-400 active:border-0 rounded"
       />
       <input
         type="number"
         name="phone_number"
         onChange={handleChange}
         placeholder="Phone Number"
-        className="w-full mb-3 p-2 border border-gray-400 active:border-0  rounded"
+        value={form.phone_number}
+        required
+        className="w-full mb-3 p-2 border border-gray-400 active:border-0 rounded"
       />
 
       <input
@@ -93,37 +139,27 @@ export default function BookingForm({ propertyId }) {
         name="guests"
         onChange={handleChange}
         placeholder="Guests"
+        value={form.guests}
+        required
         className="w-full border border-gray-400 h-[40px] rounded mb-4 p-2"
       />
 
-      <h2>Check-in Date</h2>
-      <input
-        type="date"
-        name="check_in"
-        value={form.check_in} 
-        min={today}
-        onChange={handleChange}
-        className="w-full mb-3 p-2 border rounded border-gray-400 active:border-0"
-      />
-
-      <h2>Check-out Date</h2>
-      <input
-        type="date"
-        name="check_out"
-        onChange={handleChange}
-        className="w-full mb-3 p-2 border rounded border-gray-400 active:border-0"
-      />
+      {/* Hidden inputs for dates (auto-filled by calendar) */}
+      <input type="hidden" name="check_in" value={form.check_in} />
+      <input type="hidden" name="check_out" value={form.check_out} />
 
       <textarea
         name="notes"
         onChange={handleChange}
         placeholder="Notes"
-        className="w-full border border-gray-400 p-2"
+        value={form.notes}
+        className="w-full border border-gray-400 p-2 mb-4 rounded"
       ></textarea>
 
       <button
         type="submit"
-        className="bg-custom-brown text-white px-6 py-2 rounded-lg hover:bg-custom-brown2 transition cursor-pointer"
+        disabled={!form.check_in || !form.check_out}
+        className="bg-custom-brown text-white px-6 py-2 rounded-lg hover:bg-custom-brown2 transition cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
       >
         Book Now
       </button>

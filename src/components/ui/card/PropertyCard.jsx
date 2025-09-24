@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { fetchProperties } from "../../../lib/api/wp-property.js";
 import { Link } from "react-router-dom";
 
-function Properties({}) {
+function Properties() {
   const [properties, setProperties] = useState([]);
 
   useEffect(() => {
