@@ -4,21 +4,31 @@ import "react-datepicker/dist/react-datepicker.css";
 import wpApi from "../../lib/api/axios";
 
 export default function CalendarBooking({ propertyId, onDatesSelected }) {
-  // defne useState
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [availableDates, setAvailableDates] = useState([]);
+  const [blockedDates, setBlockedDates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [icalUrl, setIcalUrl] = useState(null);
 
-  //fetch property data and ical url from wordpress
+  // 👉 Helper: build local date (Malaysia timezone safe)
+  function makeLocalDate(year, month, day) {
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  }
+
+  // 👉 Helper: format date in yyyy-mm-dd (Malaysia time)
+  function formatDateLocal(date) {
+    return date.toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kuala_Lumpur",
+    });
+  }
+
+  // Fetch property data + calendar URL
   useEffect(() => {
     const fetchPropertyData = async () => {
       try {
         const response = await wpApi.get(`/wp/v2/property/${propertyId}`);
         const property = response.data;
 
-        // get ical url from custom field
         const icalMergeUrl =
           property.meta?.imerge_ical_url ||
           property.acf?.imerge_ical_url ||
@@ -26,12 +36,14 @@ export default function CalendarBooking({ propertyId, onDatesSelected }) {
 
         setIcalUrl(icalMergeUrl);
 
-        // set if statement if found the data
-      if (icalMergeUrl) {
-        await fetchCalenderData(icalMergeUrl); // ← This line is missing
-      } else {
-        setLoading(false); // If no URL, stop loading
-      }
+        if (icalMergeUrl) {
+          await fetchCalendarData(propertyId);
+        } else {
+          setLoading(false);
+        }
+
+        console.log("Property JSON:", property);
+        console.log("imerge_ical_url:", property.acf?.imerge_ical_url);
       } catch (err) {
         console.error("Error fetching property:", err);
         setLoading(false);
@@ -41,14 +53,13 @@ export default function CalendarBooking({ propertyId, onDatesSelected }) {
     fetchPropertyData();
   }, [propertyId]);
 
-  // fetch icalmerge data
-  const fetchCalenderData = async (url) => {
+  // Fetch iCal data from WP proxy
+  const fetchCalendarData = async (id) => {
     try {
-       const path = url.replace('https://api.icalmerge.com', '');
-      const response = await fetch(`/api/ical${path}`);
-      const icalData = await response.text();
-      const dates = parselICalData(icalData);
-      setAvailableDates(dates);
+      const response = await wpApi.get(`/homestay/v1/ical/${id}`);
+      const icalData = response.data;
+      const dates = parseICalData(icalData);
+      setBlockedDates(dates);
     } catch (err) {
       console.error("Error fetching calendar:", err);
     } finally {
@@ -56,83 +67,102 @@ export default function CalendarBooking({ propertyId, onDatesSelected }) {
     }
   };
 
-  // Ical parser
-  const parselICalData = (icalData) => {
-    const availableDates = [];
+  // Parse iCal into blocked date ranges
+  const parseICalData = (icalData) => {
+    const blockedDates = [];
     const lines = icalData.split("\n");
 
     let currentEvent = {};
     lines.forEach((line) => {
-      // accepting start date
-      if (line.startsWith("DTSTART:")) {
-        const dateStr = line.replace("DTSTART:", "").trim();
-        currentEvent.start = new Date(dateStr);
+      const cleanLine = line.trim();
+
+      if (cleanLine.startsWith("DTSTART")) {
+        const dateStr = cleanLine.split(":")[1];
+        if (dateStr) {
+          if (/^\d{8}$/.test(dateStr)) {
+            // YYYYMMDD all-day
+            const year = dateStr.slice(0, 4);
+            const month = dateStr.slice(4, 6);
+            const day = dateStr.slice(6, 8);
+            currentEvent.start = makeLocalDate(year, month, day);
+          } else {
+            currentEvent.start = new Date(dateStr);
+          }
+        }
       }
 
-      //accepting end date
-      if (line.startsWith("DTEND:")) {
-        const dateStr = line.replace("DTEND:", "").trim();
-        currentEvent.end = new Date(dateStr);
+      if (cleanLine.startsWith("DTEND")) {
+        const dateStr = cleanLine.split(":")[1];
+        if (dateStr) {
+          if (/^\d{8}$/.test(dateStr)) {
+            const year = dateStr.slice(0, 4);
+            const month = dateStr.slice(4, 6);
+            const day = dateStr.slice(6, 8);
+            let endDate = makeLocalDate(year, month, day);
+            endDate.setDate(endDate.getDate() - 1); // inclusive
+            currentEvent.end = endDate;
+          } else {
+            let endDate = new Date(dateStr);
+            endDate.setDate(endDate.getDate() - 1);
+            currentEvent.end = endDate;
+          }
+        }
       }
 
-      if (line === "END:VEVENT" && currentEvent.start) {
-        availableDates.push({ ...currentEvent });
+      if (cleanLine === "END:VEVENT" && currentEvent.start) {
+        blockedDates.push({ ...currentEvent });
         currentEvent = {};
       }
     });
 
-    return availableDates;
+    return blockedDates;
   };
 
-  //check if data is available
-  const isDateAvailable = (date) => {
-     // If no available dates data yet, allow selection
-    if (availableDates.length === 0) {
-      return true;
-    }
-    
-    // Check if the date falls within any available range
-    return availableDates.some(
-      (avail) => date >= avail.start && date <= avail.end
+  // Check if a date is blocked
+  const isDateBlocked = (date) => {
+    return blockedDates.some(
+      (blocked) => date >= blocked.start && date <= blocked.end
     );
   };
 
-  const filterDate = (date) => {
-    return isDateAvailable(date);
-  };
+  const filterDate = (date) => !isDateBlocked(date);
 
-  
-
-  //Handle date changes and pass to parent
+  // Handle start date change
   const handleStartDateChange = (date) => {
     setStartDate(date);
     if (date && endDate) {
       onDatesSelected({
-        check_in: startDate.toISOString().split("T")[0],
-        check_out: date.toISOString().split("T")[0],
+        check_in: formatDateLocal(date),
+        check_out: formatDateLocal(endDate),
       });
     }
   };
 
-   // Handle end date change
+  // Handle end date change
   const handleEndDateChange = (date) => {
     setEndDate(date);
-    // If we have both dates, send to parent
     if (startDate && date) {
       onDatesSelected({
-        check_in: startDate.toISOString().split("T")[0],
-        check_out: date.toISOString().split("T")[0],
+        check_in: formatDateLocal(startDate),
+        check_out: formatDateLocal(date),
       });
     }
   };
 
   if (loading) return <div>Loading availability calendar...</div>;
-
   if (!icalUrl) return <div>No calendar available for this property.</div>;
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-md mb-6">
       <h3 className="text-lg font-semibold mb-4">Select Your Dates</h3>
+
+      {blockedDates.length > 0 && (
+        <div className="mb-4 p-3 bg-blue-50 rounded-md">
+          <p className="text-sm text-blue-700">
+            📅 {blockedDates.length} date ranges blocked from calendar
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -170,7 +200,10 @@ export default function CalendarBooking({ propertyId, onDatesSelected }) {
         </div>
       </div>
 
-      
+      <div className="mt-2 text-xs text-gray-500">
+        <p>Blocked date ranges: {blockedDates.length}</p>
+        <p>iCal URL: {icalUrl ? "Loaded" : "Not found"}</p>
+      </div>
     </div>
   );
 }

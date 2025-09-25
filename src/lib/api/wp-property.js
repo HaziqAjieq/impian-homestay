@@ -1,31 +1,37 @@
-import "dotenv";
-import axios from "axios";
+import wpApi from "./axios";
 
-const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_WORDPRESS_API ||
-    "http://impian-homestay.local/wp-json/wp/v2",
-});
+async function fetchImages(ids = []) {
+  // remove null/undefined
+  const validIds = ids.filter(Boolean);
+  if (validIds.length === 0) return [];
 
-// for fetching images
-async function fetchImage(id) {
-  if(!id) return null;
-  const response = await api.get(`/media/${id}`);
-  return response.data.source_url;
+  const query = validIds.map(id => `include[]=${id}`).join("&");
+
+  const response = await wpApi.get(`/wp/v2/media?${query}`);
+  const images = response.data;
+
+  // return in the same order as input IDs
+  return validIds.map(id => {
+    const media = images.find(img => img.id === id);
+    return media ? media.source_url : null;
+  });
 }
 
-
 export async function fetchProperties() {
-  const res = await api.get("/property");
+  const res = await wpApi.get("wp/v2/property");
 
-   return Promise.all(res.data.map(async (item) => {
-    const images = await Promise.all([
-      
-      fetchImage(item.acf.images_2),
-      fetchImage(item.acf.images_1),
-      fetchImage(item.acf.images_3),
-      fetchImage(item.acf.images_4),
-      fetchImage(item.acf.images_5),
+  return Promise.all(res.data.map(async (item) => {
+    const imageIds = [
+      item.acf.images_1,
+      item.acf.images_2,
+      item.acf.images_3,
+      item.acf.images_4,
+      item.acf.images_5,
+    ];
+
+    const [featuredImage, ...gallery] = await fetchImages([
+      item.acf.featured_image,
+      ...imageIds,
     ]);
 
     return {
@@ -37,10 +43,8 @@ export async function fetchProperties() {
       bathrooms: item.acf.bathrooms,
       slug: item.slug,
       propertyType: item.acf.property_type,
-      featuredImage: await fetchImage(item.acf.featured_image),
-      image: images.filter(Boolean),
-
-      // fetching facilities latter
+      featuredImage,
+      image: gallery.filter(Boolean),
     };
   }));
 }
