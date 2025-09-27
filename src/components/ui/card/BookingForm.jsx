@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import CalendarBooking from "../../calendar/CalendarBooking";
 import wpApi from "../../../lib/api/axios";
+// import { createBill } from "../../../lib/api/toyyibpay";
 
 // ✅ Helper: format date as dd/mm/yy without timezone shift
-function formatDateMY(date) {
+// For backend API (YYYY-MM-DD)
+function formatDateISO(date) {
   if (!date) return "";
-  const day = String(date.getDate()).padStart(2, "0");
+  if (typeof date === "string") date = new Date(date);
+
+  if (!(date instanceof Date) || isNaN(date)) return "";
+
+  const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = String(date.getFullYear()).slice(-2);
-  return `${day}/${month}/${year}`;
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 export default function BookingForm({ propertyId }) {
   const [selectedDates, setSelectedDates] = useState(null);
-   const [pricePerNight, setPricePerNight] = useState(0);
+  const [pricePerNight, setPricePerNight] = useState(0);
   const [bookingPrice, setBookingPrice] = useState(0);
 
   const [form, setForm] = useState({
@@ -28,43 +35,57 @@ export default function BookingForm({ propertyId }) {
   });
 
   // fetch pernight price from wp
-  useEffect(()=>{
-    const fetchProperty = async () =>{
-      try{
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
         const response = await wpApi.get(`/wp/v2/property/${propertyId}`);
         const property = response.data;
 
-        const perNight = 
-        property.meta?.price || property.acf?.price || 0;
+        const perNight = property.meta?.price || property.acf?.price || 0;
 
         setPricePerNight(Number(perNight) || 0);
-      } catch (err){
-        console.error('Error fetching property price:' , err);
+      } catch (err) {
+        console.error("Error fetching property price:", err);
       }
     };
     fetchProperty();
-  },[propertyId])
+  }, [propertyId]);
 
   // Handle dates selected from calendar
-  const handleDatesSelected = (dates) => {
-    setSelectedDates(dates);
-    setForm((prev) => ({
-      ...prev,
-      check_in: formatDateMY(new Date(dates.check_in)),
-      check_out: formatDateMY(new Date(dates.check_out)),
-    }));
+  const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
+const handleDatesSelected = (dates) => {
+  setSelectedDates(dates);
 
-  // calculate night between checkin and checkout
   const start = new Date(dates.check_in);
   const end = new Date(dates.check_out);
 
-  if (start && end && start < end){
+  // keep the form check_in/check_out as ISO YYYY-MM-DD strings
+  setForm((prev) => ({
+    ...prev,
+    check_in: formatDateISO(start),
+    check_out: formatDateISO(end),
+  }));
+
+  if (start && end && start < end) {
     const diffTime = end - start;
-    const night = Math.ceil((diffTime / (1000 * 60 * 60 * 24)) + 1 );
-    const total = night * pricePerNight ;
+    const nights = Math.floor(diffTime / MS_PER_DAY); // exclusive checkout
+    const total = nights * pricePerNight;
+
+    // push nights and total_amount into the form object that will be POSTed
+    setForm((prev) => ({
+      ...prev,
+      nights,
+      total_amount: total,
+    }));
+
     setBookingPrice(total);
-  }else{
+  } else {
+    setForm((prev) => ({
+      ...prev,
+      nights: 0,
+      total_amount: 0,
+    }));
     setBookingPrice(0);
   }
 
@@ -74,56 +95,44 @@ export default function BookingForm({ propertyId }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!form.check_in || !form.check_out) {
-      alert("Please select check-in and check-out dates from the calendar");
+  if (!form.check_in || !form.check_out) {
+    alert("Please select check-in and check-out dates from the calendar");
+    return;
+  }
+
+  try {
+    // Step 1: Save booking in WordPress
+    const res = await fetch(
+      "https://impian-homestay.local/wp-json/homestay/v1/booking",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      }
+    );
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Server responded with error:", res.status, errorText);
+      alert(`Booking failed: ${res.status}`);
       return;
     }
 
-    try {
-      const res = await fetch(
-        "https://impian-homestay.local/wp-json/homestay/v1/booking",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(form),
-        }
-      );
+    const data = await res.json();
+    console.log("Booking Response:", data);
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Server responded with error:", res.status, errorText);
-        alert(`Booking failed: ${res.status}`);
-        return;
-      }
-
-      const data = await res.json();
-      console.log("Booking Response:", data);
-
-      if (data.success) {
-        alert("Booking created! ID: " + data.id);
-        setForm({
-          name: "",
-          email: "",
-          phone_number: "",
-          check_in: "",
-          check_out: "",
-          guests: 1,
-          notes: "",
-          property_id: propertyId,
-        });
-        setSelectedDates(null);
-      } else {
-        alert("Booking failed: " + JSON.stringify(data));
-      }
-    } catch (err) {
-      console.error("Network/CORS error:", err);
-      alert("Network/CORS error: Check if WordPress is sending CORS headers.");
+    if (data.success) {
+     window.location.href = data.redirect;
+    } else {
+      alert("Booking failed: " + JSON.stringify(data));
     }
-  };
+  } catch (err) {
+    console.error("Error:", err);
+    alert("Something went wrong, please try again.");
+  }
+};
 
   return (
     <form
@@ -205,9 +214,7 @@ export default function BookingForm({ propertyId }) {
           <p className="text-lg font-semibold text-yellow-700">
             💰 Total Price: RM {bookingPrice.toLocaleString()}
           </p>
-          <p className="text-sm text-gray-600">
-            ({pricePerNight} per night)
-          </p>
+          <p className="text-sm text-gray-600">({pricePerNight} per night)</p>
         </div>
       )}
 

@@ -42,8 +42,7 @@ export default function CalendarBooking({ propertyId, onDatesSelected }) {
           setLoading(false);
         }
 
-        console.log("Property JSON:", property);
-        console.log("imerge_ical_url:", property.acf?.imerge_ical_url);
+    
       } catch (err) {
         console.error("Error fetching property:", err);
         setLoading(false);
