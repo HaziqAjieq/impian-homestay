@@ -35,7 +35,7 @@ export default function Header() {
   }, [currentVideoIndex]);
 
   return (
-    <div className="header-container relative w-full h-[600px] md:h-[800px] overflow-hidden mt-[-130px] rounded-b-none md:rounded-b-4xl z-0  ">
+    <header className="header-container relative w-full h-[600px] md:h-[800px] overflow-hidden mt-[-130px] rounded-b-none  z-0  ">
       {videos.map((video, index) => (
         <video
           key={video.id}
@@ -52,19 +52,20 @@ export default function Header() {
 
       {/* Example content on top of background */}
       <div className="absolute inset-0 flex items-center z-20 bg-black/50 ">
+       
         <div className="mx-10 md:mx-15 lg:mx-25  grid grid-cols-12 gap-3 items-center justify-center   ">
 
         
-        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold col-span-12 md:col-span-8 mx-0 my-0">
+        <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold col-span-12 md:col-span-10 mx-0 my-0">
            {t("quote")}
         </h1>
-          <p className="text-white text-sm sm:text-lg md:text-xl  font-semibold row-start-2 col-span-12 md:col-span-8 opacity-70 ">
+          <p className="text-white text-sm sm:text-lg md:text-xl  font-semibold row-start-2 col-span-12 md:col-span-10 opacity-70 ">
             {t("description-header")}
           </p>
         </div>
       
-      </div>
-    </div>
+     </div>
+    </header>
   );
 }
 

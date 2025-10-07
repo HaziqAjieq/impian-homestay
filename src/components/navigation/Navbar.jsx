@@ -35,7 +35,7 @@ export default function Navbar() {
   },[isHomePage])
 
   return (
-    <nav className={`nav-logo grid grid-cols-12 grid-rows-1  py-3 rounded-b-3xl md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all duration-500 ease-in-out  sticky top-0  z-100 ${
+    <nav className={`nav-logo grid grid-cols-12 grid-rows-1  py-3  md:mx-3 md:mt-2 md:rounded-3xl  place-items-center transition-all duration-500 ease-in-out  sticky top-0  z-100 ${
       isScrolled
       ? 'bg-custom-brown top-0' : 'md:top-4'
     }`} >

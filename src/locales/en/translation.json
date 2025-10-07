@@ -27,5 +27,37 @@
       "description-4": "Create memorable trips with unique stays and personal recommendations from hosts."
     }
   ],
-  "destination": "Places To Visit"
+  "destination": "Places To Visit",
+
+  "about-us-page":[ {
+    "title": "About Us!",
+    "about-description": "We believe a comfortable stay makes every journey more memorable."
+  },
+   {
+      "title-2": "Comfortable Homestays",
+      "about-description-2": "We offer more than 10 homestay units around KLIA, Salak Tinggi, Sepang, and Nilai. Choose from Studio, Apartment, or Landed House — perfect for solo travelers, couples, families, or groups."
+    },
+    {
+      "title-3": "Strategic Location",
+      "about-description-3": "Located near KLIA, Mitsui Outlet, Sepang International Circuit, and Nilai town center, making your journey convenient whether for work or vacation."
+    },
+    {
+      "title-4": "Complete Facilities",
+      "about-description-4": "Each unit is equipped with free WiFi, air conditioning, basic kitchen, cozy living area, and free parking to ensure your comfort."
+    },
+    {
+      "title-5": "Perfect for Everyone",
+      "about-description-5": "Our homestays are suitable for all kinds of guests – couples, small or large families, work groups, or even transit before flights."
+    }
+],
+
+ "booking-page": [
+    {
+      "title-header": "Book with us!!",
+      "header-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {}
+  ]
 }
+
+

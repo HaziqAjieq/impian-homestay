@@ -5,6 +5,7 @@ import PropertyPage from "./pages/public/PropertyPage";
 import Home from "./pages/public/Home";
 import Navbar from "./components/navigation/Navbar";
 import Property from "./pages/public/Property";
+import About from "./pages/public/About";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
             <Routes>
               {/* homepage */}
               <Route path="/" element={<Home/>}/>
+              {/* about page */}
+              <Route path="/about" element={<About/>}/>
               {/*  properties list with card */}
               <Route path="/property" element={<Property/>}/>
               {/* <Route path="/property" element={<Property/>} /> */}

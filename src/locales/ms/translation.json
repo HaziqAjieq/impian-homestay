@@ -27,5 +27,35 @@
       "description-4": "Cipta perjalanan yang berkesan dengan penginapan yang unik dan cadangan peribadi daripada hos."
     }
   ],
-  "destination": "Tempat Untuk Dikunjungi"
+  "destination": "Tempat Untuk Dikunjungi",
+
+  "about-us-page": [
+    {
+      "title": "Tentang Kami!",
+      "about-description": "Kami percaya penginapan yang selesa boleh buatkan perjalanan anda lebih bermakna."
+    },
+    {
+      "title-2": "Homestay Yang Selesa",
+      "about-description-2": "Kami ada lebih 10 unit homestay di kawasan KLIA, Salak Tinggi, Sepang dan Nilai. Pilihan termasuk Studio, Apartment dan Rumah Landed — sesuai untuk seorang, pasangan, keluarga atau kumpulan."
+    },
+    {
+      "title-3": "Lokasi Strategik",
+      "about-description-3": "Terletak berhampiran KLIA, Mitsui Outlet, Sepang International Circuit dan pusat bandar Nilai, memudahkan perjalanan anda sama ada untuk urusan kerja atau percutian."
+    },
+    {
+      "title-4": "Kemudahan Lengkap",
+      "about-description-4": "Setiap unit dilengkapi dengan WiFi percuma, penghawa dingin, dapur asas, ruang tamu selesa, serta tempat letak kereta percuma untuk kemudahan anda."
+    },
+    {
+      "title-5": "Sesuai Untuk Semua",
+      "about-description-5": "Homestay kami sesuai untuk pelbagai jenis tetamu – pasangan, keluarga kecil atau besar, rombongan kerja, malah transit sebelum penerbangan."
+    }
+  ],
+  "booking-page": [
+    {
+      "title-header": "Booking dengan kami!",
+      "header-description": "Lorem ipsum Melayu dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {}
+  ]
 }

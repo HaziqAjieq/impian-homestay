@@ -17,34 +17,45 @@ async function fetchImages(ids = []) {
   });
 }
 
+// fetch all properties (unchanged)
 export async function fetchProperties() {
   const res = await wpApi.get("wp/v2/property");
 
-  return Promise.all(res.data.map(async (item) => {
-    const imageIds = [
-      item.acf.images_1,
-      item.acf.images_2,
-      item.acf.images_3,
-      item.acf.images_4,
-      item.acf.images_5,
-    ];
+  return Promise.all(
+    res.data.map(async (item) => {
+      const imageIds = [
+        item.acf.images_1,
+        item.acf.images_2,
+        item.acf.images_3,
+        item.acf.images_4,
+        item.acf.images_5,
+      ];
 
-    const [featuredImage, ...gallery] = await fetchImages([
-      item.acf.featured_image,
-      ...imageIds,
-    ]);
+      const [featuredImage, ...gallery] = await fetchImages([
+        item.acf.featured_image,
+        ...imageIds,
+      ]);
 
-    return {
-      id: item.id,
-      title: item.title.rendered,
-      price: item.acf.price,
-      location: item.acf.location,
-      bedrooms: item.acf.bedrooms,
-      bathrooms: item.acf.bathrooms,
-      slug: item.slug,
-      propertyType: item.acf.property_type,
-      featuredImage,
-      image: gallery.filter(Boolean),
-    };
-  }));
+      return {
+        id: item.id,
+        title: item.title.rendered,
+        price: item.acf.price,
+        location: item.acf.location,
+        bedrooms: item.acf.bedrooms,
+        bathrooms: item.acf.bathrooms,
+        slug: item.slug,
+        propertyType: item.acf.property_type,
+        featuredImage,
+        image: gallery.filter(Boolean),
+      };
+    })
+  );
+}
+
+// fetch bookings / availability
+export async function fetchAvailability(propertyId, startDate, endDate) {
+  const res = await wpApi.get(`/homestay/v1/availability`, {
+    params: { propertyId, startDate, endDate },
+  });
+  return res.data; // { available: true/false, bookings: [...] }
 }
