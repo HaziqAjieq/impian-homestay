@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { fetchProperties } from "../../../lib/api/wp-property.js";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-function Properties() {
+function PropertyCard() {
   const [properties, setProperties] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
     fetchProperties()
@@ -11,44 +12,70 @@ function Properties() {
       .catch((err) => console.error("Failed to load properties:", err));
   }, []);
 
- 
-   return (
-  <div className="grid grid-cols-1 sm:grid-cols-2   lg:grid-cols-3 gap-6 w-full px-10 ">
-    {properties.map((p) => (
-      <div
-        key={p.id}
-        className="bg-custom-brown flex flex-col gap-2 text-white rounded-xl pb-5"
-      >
-        {p.featuredImage && (
-          <img
-            src={p.featuredImage}
-            alt={p.title}
-            className="rounded-t-xl w-autoi h-[220px] object-cover"
-          />
-        )}
-        <div className="px-4 text-sm">
-          <h2 className="font-semibold text-2xl md:text-4xl">{p.title}</h2>
-          <p>RM {p.price} / per-night</p>
-          <p>{p.location}</p>
-          <p>{p.bedrooms} Bed</p>
-          <p>{p.bathrooms} Bath</p>
-          <p>Type: {p.propertyType}</p>
-          {/* will take slug for each property */}
-           <Link key={p.id} to={`/property/${p.slug}`}>
-          <button>
-            See More
-          </button>
+  // Limit to 6 only on homepage
+  const isHomePage = location.pathname === "/";
+  const displayedProperties = isHomePage ? properties.slice(0, 6) : properties;
+
+  return (
+    <div className="w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {displayedProperties.map((p) => (
+          <div
+            key={p.id}
+            className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300"
+          >
+            {p.featuredImage && (
+              <div className="relative w-full h-[220px] overflow-hidden">
+                <img
+                  src={p.featuredImage}
+                  alt={p.title}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
+              
+              </div>
+            )}
+            <div className="px-5 py-4 flex flex-col gap-2">
+              <h2 className="font-bold text-lg md:text-2xl text-custom-brown truncate">
+                {p.title}
+              </h2>
+                <div className="text-gray-800 text-sm font-semibold md:text-base">
+                  {p.location}
+                </div>
+              <p className="text-gray-600 text-sm md:text-base">
+                RM {p.price} / night
+              </p>
+             
+                <div className="flex flex-col gap-3 text-sm text-gray-500">
+                <div className="flex flex-wrap gap-4">
+                  <span>{p.bedrooms} Bed</span>
+                  <span>{p.bathrooms} Bath</span>
+                </div>
+
+                <span>Type: {p.propertyType}</span>
+              </div>
+              
+              <Link to={`/property/${p.slug}`}>
+                <button className="mt-4 bg-custom-brown hover:bg-custom-brown2 cursor-pointer text-white font-medium px-4 py-2 rounded-lg transition-all duration-300 w-full">
+                  See Details
+                </button>
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* See More button (only on homepage) */}
+      {isHomePage && properties.length > 6 && (
+        <div className="flex justify-center mt-10">
+          <Link to="/property">
+            <button className="bg-custom-brown hover:bg-custom-brown2 cursor-pointer text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg">
+              See More Properties
+            </button>
           </Link>
         </div>
-      </div>
-    ))}
-  </div>
-);
-
+      )}
+    </div>
+  );
 }
 
-export default Properties;
-// bellow for getting all images
-// {p.image.map((img, i) => (
-//         <img key={i} src={img} alt={p.title} />
-//       ))}
+export default PropertyCard;

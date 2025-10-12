@@ -1,0 +1,28 @@
+{
+  "reviews": [
+    {
+      "name": "Khairul Arif",
+       "rating": 5,
+        "platform": "Airbnb",
+      "description": "Accommodation that is suitable for small family gatherings🥰, the location of the house is very close to KLIA 👍️👍️"
+    },
+    {
+      "name": "Zulpawati",
+      "rating": 5,
+        "platform": "Airbnb",
+      "description": "very nice place, all rooms are clean and tidy, simple cooking and dining equipment is complete, the host is very responsive, close to the airport, shopping is also easy. highly recommended and plan to stay here again if I return to KL."
+    },
+    {
+      "name": "Farah Amira",
+      "rating": 5,
+        "platform": "Airbnb",
+      "description": "Clean and cozy house. Responsive to our questions as well. Our family had a great stay here. Will recommend to my friends and family in future."
+    },
+    {
+      "name": "Muhammad Hanafi",
+      "rating": 5,
+        "platform": "Airbnb",
+      "description": "I had a fantastic stay at this Airbnb! The space was clean, cozy, and exactly as described. The host was incredibly welcoming and responsive, making sure I had everything I needed for a comfortable stay. The location was perfect—close to the airport yet in a quiet neighborhood. Just for long car like big SUV or van, I found it is a bit difficult to park inside. But you can also park outside.I highly recommend this place and would definitely stay here again!"
+    }
+  ]
+}

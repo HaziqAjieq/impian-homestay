@@ -1,67 +1,78 @@
-import React from 'react'
-import { useState, useEffect } from 'react';
-import PageHeader from '../../components/header/PageHeader'
-import { useTranslation } from 'react-i18next'
-import Filteration from '../../components/booking/Filteration';
-import useProperties from "../../hooks/useProperties";
-import useAvailability from "../../hooks/useAvailability";
-import PropertyList from '../../components/booking/PropertyList';
+import React, { useEffect, useState } from "react";
+import PropertyCardBook from "../../components/booking/PropertyCardBook";
+import Filteration from "../../components/booking/Filteration";
+import PageHeader from "../../components/header/PageHeader";
+import PropertyCardSkeleton from "../../components/booking/PropertyCardSkeleton";
+import { fetchProperties } from "../../lib/api/wp-property";
+import { useTranslation } from "react-i18next";
 
 export default function Property() {
   const { t } = useTranslation();
- const [results, setResults] = useState([]);
-  // Load properties
-  const { properties, loading: loadingProperties } = useProperties();
+  const [availableProperties, setAvailableProperties] = useState([]); // from API (after search)
+  const [allProperties, setAllProperties] = useState([]); // all properties (default)
+  const [showFiltered, setShowFiltered] = useState(false); // determines view mode
+  const [loading, setLoading] = useState(true);
+  const [filterLoading, setFilterLoading] = useState(false);
 
-  // Property IDs are always defined, even if empty
-  const propertyIds = properties.map(p => p.id);
+  // 🟢 Load all properties on first page load
+  useEffect(() => {
+    const loadAllProperties = async () => {
+      try {
+        const data = await fetchProperties();
+        setAllProperties(data);
+      } catch (error) {
+        console.error("❌ Error fetching all properties:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Load availability (even with empty IDs, hook stays consistent)
-  const { availability, loading: loadingAvailability } = useAvailability(propertyIds);
+    loadAllProperties();
+  }, []);
 
-  const [filters, setFilters] = useState(null);
+  // 🟡 When filter starts — show skeleton
+const handleStartSearch = () => {
+  setLoading(true); // 👈 this will make the skeleton show
+};
 
-  // Loading state
-  if (loadingProperties || loadingAvailability) {
-    return <p>Loading...</p>;
-  }
-
-  // Check availability
-  const isAvailable = (propertyId, checkIn, checkOut) => {
-    if (!availability[propertyId]) return true; // no bookings = available
-    const bookings = availability[propertyId];
-    return !bookings.some(booking => (
-      checkIn <= booking.end && checkOut >= booking.start
-    ));
+  // 🟡 When filter finishes
+  const handleResults = (results) => {
+    setAvailableProperties(results);
+  setShowFiltered(true);
+  setLoading(false);        
+  setFilterLoading(false);
   };
 
-  // Apply filters
-  const filteredProperties = filters
-    ? properties.filter(p => {
-        const okDates = isAvailable(p.id, filters.checkIn, filters.checkOut);
-        const okGuests = !filters.guests
-          || (p.acf?.max_guests
-            ? filters.guests.adults + filters.guests.children <= p.acf.max_guests
-            : true);
-        return okDates && okGuests;
-      })
-    : properties;
+  // 🟤 Reset back to all properties
+  const handleReset = () => {
+    setShowFiltered(false);
+    setAvailableProperties([]);
+  };
 
-  // Debug logging
- 
+  
 
   return (
-    <>
-      <PageHeader title={t("booking-page.0.title-header")}>
+    <div >
+      {/* Filteration Component */}
+       <PageHeader title={t("booking-page.0.title-header")}>
         <p>{t("booking-page.0.header-description")}</p>
       </PageHeader>
 
-      {/* date filteration */}
-      <Filteration onSearch={setResults} />
 
-      {/* debug info */}
-      <PropertyList properties={results} />
-    </>
+      <div className="w-full flex justify-center mb-6">
+        <Filteration onResults={handleResults} onReset={handleReset}  onStart={handleStartSearch}  />
+      </div>
+
+      {/* Loading State */}
+      {loading || filterLoading ? (
+       <PropertyCardSkeleton count={6} />
+      ) : (
+       <PropertyCardBook
+    properties={allProperties}
+    availableProperties={availableProperties}
+    showOnlyAvailable={showFiltered}
+  />
+      )}
+    </div>
   );
 }
-

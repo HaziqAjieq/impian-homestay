@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+
 import PropertyPage from "./pages/public/PropertyPage";
 import Home from "./pages/public/Home";
 import Navbar from "./components/navigation/Navbar";
@@ -9,7 +9,7 @@ import About from "./pages/public/About";
 
 function App() {
   return (
-    <AuthProvider>
+  
       <Router>
         <div className="min-h-screen flex flex-col  transition-all">
           {/* navbar goes here */}
@@ -34,7 +34,7 @@ function App() {
           {/* footer goes here */}
         </div>
       </Router>
-    </AuthProvider>
+   
   );
 }
 
