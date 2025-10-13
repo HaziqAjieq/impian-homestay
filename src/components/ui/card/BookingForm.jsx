@@ -212,7 +212,7 @@ const handleDatesSelected = (dates) => {
       {bookingPrice > 0 && (
         <div className="mb-4 p-3 bg-yellow-50 rounded-md">
           <p className="text-lg font-semibold text-yellow-700">
-            💰 Total Price: RM {bookingPrice.toLocaleString()}
+            Total Price: RM {bookingPrice.toLocaleString()}
           </p>
           <p className="text-sm text-gray-600">({pricePerNight} per night)</p>
         </div>

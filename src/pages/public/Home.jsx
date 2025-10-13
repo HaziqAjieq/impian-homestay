@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, } from "react";
 import Header from "../../components/header/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faStar } from "@fortawesome/free-regular-svg-icons";
@@ -11,17 +11,26 @@ import { useTranslation } from "react-i18next";
 import Destination from "../../components/ui/homepage/Destination";
 import PropertyCard from "../../components/ui/card/PropertyCard";
 import data from "../../locales/testimonials/testimonials.json";
+import ReviewSection from "../../components/ui/homepage/ReviewSection";
+
 
 export default function Home() {
   const { t } = useTranslation();
   const features = t("description-choose-us", { returnObjects: true });
+   
 
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    setReviews(data); // Set the imported JSON data to state
+    const withPlatform = data.reviews.map((r) => ({
+      ...r,
+      rating: 5,
+      platform: "Airbnb",
+    }));
+    setReviews(withPlatform);
   }, []);
 
+  
   return (
     <div className="bg-white min-h-screen">
       <Header />
@@ -73,47 +82,9 @@ export default function Home() {
 
       {/* review section*/}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-8">
-          <h2 className="text-3xl md:text-5xl font-bold text-custom-brown mb-8">
-            Reviews
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {reviews.reviews?.map((review, index) => (
-              <div
-                key={index}
-                className="bg-white shadow-md rounded-2xl p-6 border border-gray-200"
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xl font-semibold text-custom-brown">
-                    {review.name}
-                  </h3>
-                  <span className="text-sm bg-gray-300 text-white px-2 py-1 rounded-lg">
-                    {review.platform}
-                  </span>
-                </div>
-
-                {/* Stars */}
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <FontAwesomeIcon
-                      key={i}
-                      icon={faStarSolid}
-                      className={`${
-                        i < Math.round(review.rating)
-                          ? "text-yellow-400"
-                          : "text-gray-300"
-                      } mr-1`}
-                    />
-                  ))}
-                </div>
-
-                <p className="text-gray-700 leading-relaxed">
-                  {review.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+         <ReviewSection reviews={reviews} />
+           
+         
       </section>
     </div>
   );
